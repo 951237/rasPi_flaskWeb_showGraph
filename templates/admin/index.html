@@ -1,23 +1,21 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-<div class="jumbotron">
-    <div class="container">
-        <h1>SQLite Sensor Storage pt. 3</h1>
-        <p>DHT Sensor readings stored in a SQLite database!</p>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row">
-        {% for sensor in config.MODEL.get_sensors() %}
-        <div class="col-md-5">
-            <h2>{{ sensor.name }}</h2>
-            <canvas id='chart_{{ sensor.id }}' width='400' height='400'></canvas>
+    <div class="jumbotron">
+        <div class="container">
+            <h1>SQLite Sensor Storage pt. 3</h1>
+            <p>DHT Sensor readings stored in a SQLite database!</p>
         </div>
-        {% endfor %}
     </div>
-</div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <h2>DHT22</h2>
+                <canvas id='chart_01' width='1000' height='600'></canvas>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block tail %}
@@ -61,15 +59,12 @@
     $(document).ready(function () {
         // Loop through each sensor and call the buildDHTChart function above
         // to generate its chart.
-        {% for sensor in config.MODEL.get_sensors() %}
-        {% set humidity = config.MODEL.get_recent_readings(sensor.name + ' Humidity') %}
-        {% set temperature = config.MODEL.get_recent_readings(sensor.name + ' Temperature') %}
-        buildDHTChart('#chart_{{ sensor.id }}',
+        {% set humidity = config.MODEL.get_recent_readings('DHT22 Humidity') %}
+        {% set temperature = config.MODEL.get_recent_readings('DHT22 Temperature') %}
+        buildDHTChart('#chart_01',
             ["{{ humidity|reverse|join('\",\"', attribute='time')|safe }}"],
             [{{ humidity| reverse | join(',', attribute = 'value') }}],
-        [{{ temperature| reverse | join(',', attribute = 'value') }}]);
-
-    {% endfor %}
+            [{{ temperature| reverse | join(',', attribute = 'value') }}]);
     });
 </script>
 {% endblock %}

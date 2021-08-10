@@ -3,7 +3,7 @@ import datetime
 import time
 
 import board
-import Adafruit_DHT
+import adafruit_dht
 
 import model
 
@@ -11,27 +11,26 @@ import model
 data = model.DHTData()
 
 # 센서 설정
-data.define_sensor('DHT1', Adafruit_DHT.DHT22, 18)
-
+# data.define_sensor('DHT1', Adafruit_DHT.DHT22, 18)
+dhtDevice = adafruit_dht.DHT22(board.D4)
 
 # 센서값 2초마다 읽기
-try:
-    while True:
+while True:
+    try:
         # 날짜 값 받기
         reading_time = datetime.datetime.now()
         
-        # 센서의 값들 가져오기
-        for sensor in data.get_sensors():
-            # 센서 값 가져오고 출력하기 
-            humidity, temperature = Adafruit_DHT.read_retry(sensor.dht_type, sensor.pin)
-            print('Read sensor: {0} humidity: {1:0.2f}% temperature: {2:0.2f}C'.format(
-                sensor.name, humidity, temperature))
+        humidity = dhtDevice.humidity
+        temperature = dhtDevice.temperature
+        print('Read sensor: DHT22 humidity: {0:0.2f}% temperature: {1:0.2f}C'.format(humidity, temperature))
 
-            # 센서값을 데이터 베이스에 저장하기 
-            data.add_reading(time=reading_time, name='{0} Humidity'.format(sensor.name), value=humidity)
-            data.add_reading(time=reading_time, name='{0} Temperature'.format(sensor.name), value=temperature)
+        # 센서값을 데이터 베이스에 저장하기 
+        data.add_reading(time=reading_time, name='DHT22 Humidity', value=humidity)
+        data.add_reading(time=reading_time, name='DHT22 Temperature', value=temperature)
         # Wait 2 seconds and repeat.
-        time.sleep(2.0)
-finally:
-    # 작업이 끝나면 DB닫기 
-    data.close()
+    except RuntimeError as error:
+        print(error.args[0])
+    time.sleep(2.0)
+    # finally:
+    # # 작업이 끝나면 DB닫기 
+    #     data.close()
