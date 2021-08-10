@@ -1,4 +1,3 @@
-
 from peewee import *
 
 
@@ -37,7 +36,6 @@ class DHTData(object):
 
     # DB에 센서 추가하기 
     def define_sensor(self, name, dht_type, pin):
-
         DHTSensor.get_or_create(name=name, dht_type=dht_type, pin=pin)
 
     # 센서 테이블 값 가져오기 
