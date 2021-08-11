@@ -30,7 +30,7 @@ while True:
         # Wait 2 seconds and repeat.
     except RuntimeError as error:
         print(error.args[0])
-    time.sleep(2.0)
+    time.sleep(60.0)
     # finally:
     # # 작업이 끝나면 DB닫기 
     #     data.close()
